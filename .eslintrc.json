@@ -15,6 +15,10 @@
         "class-methods-use-this": "off",
         "no-unused-vars": "off",
         "no-underscore-dangle": "off",
-        "linebreak-style": "off"
+        "linebreak-style": "off",
+        "no-undef": "off",
+        "no-console": "off",
+        "camelcase": "off",
+        "no-param-reassign": "off"
     }
 }
