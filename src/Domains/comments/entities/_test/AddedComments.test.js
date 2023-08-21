@@ -23,4 +23,23 @@ describe('a Comment entitites', () => {
     // Action and Assert
     expect(() => new AddedComments({ ...payload })).toThrowError('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
+
+  it('should return AddedComment object data correctly', () => {
+    // Arrange
+    const payload = {
+      id: 'comment-123',
+      content: 'Comment content',
+      owner: 'user-123',
+    };
+
+    // Action
+    const addedComments = () => new AddedComments(payload);
+
+    // Assert
+    expect(addedComments()).toMatchObject({
+      id: 'comment-123',
+      content: 'Comment content',
+      owner: 'user-123',
+    });
+  });
 });

@@ -6,17 +6,15 @@ class ThreadsHandler {
 
     this.postThreadHandler = this.postThreadHandler.bind(this);
     this.getThreadDetailByIdHandler = this.getThreadDetailByIdHandler.bind(this);
-    this.postThreadsCommentsHandler = this.postThreadsCommentsHandler.bind(this);
-    this.deleteThreadsCommentsHandler = this.deleteThreadsCommentsHandler.bind(this);
   }
 
   async postThreadHandler(request, h) {
     const { id: userId, username } = request.auth.credentials;
     const { title, body } = request.payload;
 
-    const threadsUseCase = this._container.getInstance(ThreadsUseCase.name);
+    const addThreadsUseCase = this._container.getInstance(ThreadsUseCase.name);
 
-    const addedThread = await threadsUseCase.addThreads({
+    const addedThread = await addThreadsUseCase.addThread({
       userId, username, title, body,
     });
 
@@ -34,37 +32,13 @@ class ThreadsHandler {
     return response;
   }
 
-  async postThreadsCommentsHandler(request, h) {
-    const { id: userId, username } = request.auth.credentials;
-    const { threadId } = request.params;
-    const { content } = request.payload;
-
-    const threadsUseCase = this._container.getInstance(ThreadsUseCase.name);
-
-    const addedComment = await threadsUseCase.addComments({
-      userId, username, threadId, content,
-    });
-
-    const response = h.response({
-      status: 'success',
-      data: {
-        addedComment: {
-          id: addedComment.id,
-          content: addedComment.content,
-          owner: addedComment.owner,
-        },
-      },
-    });
-    response.code(201);
-    return response;
-  }
-
   async getThreadDetailByIdHandler(request, h) {
     const { threadId: id } = request.params;
 
-    const threadsUseCase = this._container.getInstance(ThreadsUseCase.name);
+    const getThreadDetailByThreadIdUseCase = this._container
+      .getInstance(ThreadsUseCase.name);
 
-    const { thread, comments } = await threadsUseCase.getThreadDetailById({ id });
+    const { thread, comments } = await getThreadDetailByThreadIdUseCase.getThreadDetailById({ id });
 
     const response = h.response({
       status: 'success',
@@ -78,23 +52,6 @@ class ThreadsHandler {
           comments,
         },
       },
-    });
-    response.code(200);
-    return response;
-  }
-
-  async deleteThreadsCommentsHandler(request, h) {
-    const { id: userId } = request.auth.credentials;
-    const { threadId, commentId } = request.params;
-
-    const threadsUseCase = this._container.getInstance(ThreadsUseCase.name);
-
-    await threadsUseCase.deleteCommentOnThreadByCommentId({
-      userId, threadId, commentId,
-    });
-
-    const response = h.response({
-      status: 'success',
     });
     response.code(200);
     return response;

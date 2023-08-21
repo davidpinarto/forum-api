@@ -23,4 +23,23 @@ describe('a AddedThread entitites', () => {
     // Action and Assert
     expect(() => new AddedThread(payload)).toThrowError('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
+
+  it('should return AddedThread object data correctly', () => {
+    // Arrange
+    const payload = {
+      id: 'thread-123',
+      title: 'Thread Title',
+      owner: 'user-123',
+    };
+
+    // Action
+    const addedThread = () => new AddedThread(payload);
+
+    // Assert
+    expect(addedThread()).toMatchObject({
+      id: 'thread-123',
+      title: 'Thread Title',
+      owner: 'user-123',
+    });
+  });
 });

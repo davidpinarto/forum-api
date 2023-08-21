@@ -25,4 +25,25 @@ describe('a Comment entitites', () => {
     // Action and Assert
     expect(() => new AddComments(payload)).toThrowError('ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
+
+  it('should return AddComment object data correctly', () => {
+    // Arrange
+    const payload = {
+      userId: 'user-123',
+      username: 'david',
+      threadId: 'thread-123',
+      content: 'thread content',
+    };
+
+    // Action
+    const addComments = () => new AddComments(payload);
+
+    // Assert
+    expect(addComments()).toMatchObject({
+      userId: 'user-123',
+      username: 'david',
+      threadId: 'thread-123',
+      content: 'thread content',
+    });
+  });
 });
