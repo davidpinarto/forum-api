@@ -6,6 +6,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddComments = require('../../../Domains/comments/entities/AddComments');
 const AddedComments = require('../../../Domains/comments/entities/AddedComments');
+const GetComments = require('../../../Domains/comments/entities/GetComments');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
@@ -59,6 +60,9 @@ describe('CommentsRepositoryPostgres', () => {
         content: commentPayload.content,
         owner: commentPayload.userId,
       }));
+
+      const checkAddedComments = await CommentsTableTestHelper.checkAddedComments('comment-123');
+      expect(checkAddedComments).toHaveLength(1);
     });
   });
 
@@ -90,7 +94,10 @@ describe('CommentsRepositoryPostgres', () => {
         .addThreadsComments({ threadId: 'thread-123', commentId: 'comment-123' });
 
       // Assert
-      expect(addedThreadCommentId).toMatch('comment-123');
+      expect(addedThreadCommentId).toEqual('thread_comment-123');
+
+      const checkThreadsCommentsConstraint = await CommentsTableTestHelper.checkThreadsCommentsConstraint('thread_comment-123');
+      expect(checkThreadsCommentsConstraint).toHaveLength(1);
     });
   });
 
@@ -120,19 +127,21 @@ describe('CommentsRepositoryPostgres', () => {
       await ThreadsTableTestHelper.addThread({});
 
       // user-234 & user-345 add comment
+      const date = new Date().toISOString();
+
       await CommentsTableTestHelper.addComments({
         id: 'comment-123',
         owner: 'user-234',
         username: 'shibainu',
         content: 'Comment content',
-        date: new Date().toISOString(),
+        date,
       });
       await CommentsTableTestHelper.addComments({
         id: 'comment-234',
         owner: 'user-345',
         username: 'jonggun',
         content: 'Comment content',
-        date: new Date().toISOString(),
+        date,
       });
 
       // add threads constraint with comments table
@@ -154,7 +163,22 @@ describe('CommentsRepositoryPostgres', () => {
       const comments = await commentsRepositoryPostgres.getThreadDetailCommentsByThreadId('thread-123');
 
       // Assert
-      expect(comments).toHaveLength(2);
+      expect(comments).toEqual(new GetComments([
+        {
+          id: 'comment-123',
+          username: 'shibainu',
+          date,
+          content: 'Comment content',
+          isDeleted: false,
+        },
+        {
+          id: 'comment-234',
+          username: 'jonggun',
+          date,
+          content: 'Comment content',
+          isDeleted: false,
+        },
+      ]));
     });
   });
 
@@ -342,7 +366,13 @@ describe('CommentsRepositoryPostgres', () => {
       const commentsRepositoryPostgres = new CommentsRepositoryPostgres(pool, {});
 
       // Action & Assert
-      expect(await commentsRepositoryPostgres.sofDeleteComment('comment-123')).toEqual('comment-123');
+      await expect(commentsRepositoryPostgres.sofDeleteComment('comment-123'))
+        .resolves
+        .not
+        .toThrowError(InvariantError);
+
+      const checkDeletedComment = await CommentsTableTestHelper.checkIsDeletedComment('comment-123');
+      expect(checkDeletedComment.is_deleted).toEqual(true);
     });
 
     it('should throw error when failed to delete thread', async () => {

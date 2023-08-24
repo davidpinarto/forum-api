@@ -1,5 +1,6 @@
 const AddThread = require('../../../Domains/threads/entities/AddThread');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
+const GetComments = require('../../../Domains/comments/entities/GetComments');
 const ThreadsRepository = require('../../../Domains/threads/ThreadsRepository');
 const ThreadsUseCase = require('../ThreadsUseCase');
 const CommentsRepository = require('../../../Domains/comments/CommentsRepository');
@@ -52,30 +53,29 @@ describe('ThreadsUseCase', () => {
       const useCasePayload = {
         id: 'thread-123',
       };
-      const createDate = new Date().toISOString();
+      const date = new Date().toISOString();
 
       const expectedThreadValue = {
         id: useCasePayload.id,
         title: 'Thread Title',
         body: 'Thread body',
-        date: createDate,
+        date,
         username: 'david',
+        comments: [
+          {
+            id: 'comment-123',
+            username: 'jonggun',
+            date,
+            content: 'Comment content',
+          },
+          {
+            id: 'comment-234',
+            username: 'gimyung',
+            date,
+            content: '**komentar telah dihapus**',
+          },
+        ],
       };
-
-      const expectedCommentsValue = [
-        {
-          id: 'comment-123',
-          username: 'jonggun',
-          date: createDate,
-          content: 'Comment content',
-        },
-        {
-          id: 'comment-234',
-          username: 'gimyung',
-          date: createDate,
-          content: '**komentar telah dihapus**',
-        },
-      ];
 
       // create use case dependency
       const mockThreadsRepository = new ThreadsRepository();
@@ -87,26 +87,28 @@ describe('ThreadsUseCase', () => {
           id: 'thread-123',
           title: 'Thread Title',
           body: 'Thread body',
-          date: createDate,
+          date,
           username: 'david',
         }));
       mockCommentsRepository.getThreadDetailCommentsByThreadId = jest.fn()
-        .mockImplementation(() => Promise.resolve([
-          {
-            id: 'comment-123',
-            username: 'jonggun',
-            date: createDate,
-            content: 'Comment content',
-            is_deleted: false,
-          },
-          {
-            id: 'comment-234',
-            username: 'gimyung',
-            date: createDate,
-            content: 'Comment content',
-            is_deleted: true,
-          },
-        ]));
+        .mockImplementation(() => Promise.resolve(new GetComments(
+          [
+            {
+              id: 'comment-123',
+              username: 'jonggun',
+              date,
+              content: 'Comment content',
+              is_deleted: false,
+            },
+            {
+              id: 'comment-234',
+              username: 'gimyung',
+              date,
+              content: 'Comment content',
+              is_deleted: true,
+            },
+          ],
+        )));
 
       // create use case instance
       const threadsUseCase = new ThreadsUseCase({
@@ -115,12 +117,10 @@ describe('ThreadsUseCase', () => {
       });
 
       // Action
-      const { thread, comments } = await threadsUseCase.getThreadDetailById(useCasePayload);
+      const thread = await threadsUseCase.getThreadDetailById(useCasePayload);
 
       // Assert
       expect(thread).toStrictEqual(expectedThreadValue);
-
-      expect(comments).toStrictEqual(expectedCommentsValue);
 
       expect(mockThreadsRepository.getThreadDetailById)
         .toBeCalledWith(useCasePayload.id);

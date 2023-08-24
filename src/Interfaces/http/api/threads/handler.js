@@ -21,11 +21,7 @@ class ThreadsHandler {
     const response = h.response({
       status: 'success',
       data: {
-        addedThread: {
-          id: addedThread.id,
-          title: addedThread.title,
-          owner: addedThread.owner,
-        },
+        addedThread,
       },
     });
     response.code(201);
@@ -38,19 +34,12 @@ class ThreadsHandler {
     const getThreadDetailByThreadIdUseCase = this._container
       .getInstance(ThreadsUseCase.name);
 
-    const { thread, comments } = await getThreadDetailByThreadIdUseCase.getThreadDetailById({ id });
+    const thread = await getThreadDetailByThreadIdUseCase.getThreadDetailById({ id });
 
     const response = h.response({
       status: 'success',
       data: {
-        thread: {
-          id: thread.id,
-          title: thread.title,
-          body: thread.body,
-          date: thread.date,
-          username: thread.username,
-          comments,
-        },
+        thread,
       },
     });
     response.code(200);

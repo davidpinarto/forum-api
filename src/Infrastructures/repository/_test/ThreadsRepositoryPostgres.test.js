@@ -48,6 +48,9 @@ describe('ThreadsRepositoryPostgres', () => {
         title: threadPayload.title,
         owner: addUser.id,
       }));
+
+      const checkAddedThread = await ThreadsTableTestHelper.checkAddedThread('thread-123');
+      expect(checkAddedThread).toHaveLength(1);
     });
   });
 
@@ -71,7 +74,16 @@ describe('ThreadsRepositoryPostgres', () => {
         fullname: 'David Pinarto',
       });
 
-      await ThreadsTableTestHelper.addThread({});
+      const date = new Date().toISOString();
+
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        owner: 'user-123',
+        username: 'david',
+        title: 'Thread Title',
+        body: 'Thread body',
+        date,
+      });
 
       const fakeIdGenerator = () => '123'; // stub!
       const threadsRepositoryPostgres = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
@@ -80,7 +92,13 @@ describe('ThreadsRepositoryPostgres', () => {
       const threadDetail = await threadsRepositoryPostgres.getThreadDetailById('thread-123');
 
       // Assert
-      expect(threadDetail).toBeDefined();
+      expect(threadDetail).toEqual({
+        id: 'thread-123',
+        username: 'david',
+        title: 'Thread Title',
+        body: 'Thread body',
+        date,
+      });
     });
   });
 
@@ -92,6 +110,20 @@ describe('ThreadsRepositoryPostgres', () => {
       // Action & Assert
       await expect(threadsRepositoryPostgres.validateThreadExist('thread-123'))
         .rejects
+        .toThrowError(NotFoundError);
+    });
+
+    it('should not throw error if thread is exist', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({});
+
+      const threadsRepositoryPostgres = new ThreadsRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(threadsRepositoryPostgres.validateThreadExist('thread-123'))
+        .resolves
+        .not
         .toThrowError(NotFoundError);
     });
   });

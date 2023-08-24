@@ -1,5 +1,4 @@
 const InvariantError = require('./InvariantError');
-const AuthorizationError = require('./AuthorizationError');
 
 const DomainErrorTranslator = {
   translate(error) {

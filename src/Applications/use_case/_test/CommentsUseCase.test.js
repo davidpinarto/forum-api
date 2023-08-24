@@ -21,10 +21,6 @@ describe('CommentUseCase', () => {
         owner: 'user-123',
       });
 
-      const mockAddThreadsComments = {
-        id: 'thread_comment-123',
-      };
-
       // create use case depedency
       const mockThreadsRepository = new ThreadsRepository();
       const mockCommentsRepository = new CommentsRepository();
@@ -35,7 +31,7 @@ describe('CommentUseCase', () => {
       mockCommentsRepository.addComments = jest.fn()
         .mockImplementation(() => Promise.resolve(mockAddedComments));
       mockCommentsRepository.addThreadsComments = jest.fn()
-        .mockImplementation(() => Promise.resolve(mockAddThreadsComments));
+        .mockImplementation(() => Promise.resolve('thread_comment-123'));
 
       // create use case instance
       const getCommentsUseCase = new CommentsUseCase({
@@ -83,7 +79,7 @@ describe('CommentUseCase', () => {
       mockCommentsRepository.validateCommentOwner = jest.fn()
         .mockImplementation(() => Promise.resolve());
       mockCommentsRepository.sofDeleteComment = jest.fn()
-        .mockImplementation(() => Promise.resolve('comment-123'));
+        .mockImplementation(() => Promise.resolve());
 
       // create use case instance
       const getCommentsUseCase = new CommentsUseCase({

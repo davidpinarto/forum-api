@@ -26,10 +26,44 @@ const CommentsTableTestHelper = {
     await pool.query(query);
   },
 
+  async checkIsDeletedComment(id) {
+    const query = {
+      text: 'SELECT is_deleted FROM comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rows[0];
+  },
+
+  async checkAddedComments(id) {
+    const query = {
+      text: 'SELECT id FROM comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rows;
+  },
+
+  async checkThreadsCommentsConstraint(id) {
+    const query = {
+      text: 'SELECT id FROM threads_comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rows;
+  },
+
   async cleanTable() {
     await pool.query('DELETE FROM comments WHERE 1=1');
     await pool.query('DELETE FROM threads_comments WHERE 1=1');
   },
+
 };
 
 module.exports = CommentsTableTestHelper;

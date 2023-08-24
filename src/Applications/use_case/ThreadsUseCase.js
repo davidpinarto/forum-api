@@ -1,5 +1,4 @@
 const AddThread = require('../../Domains/threads/entities/AddThread');
-const { mapDBThreadDetailToModel } = require('../../Commons/utils/mapDBThreadDetailToModel');
 
 class ThreadsUseCase {
   constructor({ threadsRepository, commentsRepository }) {
@@ -9,8 +8,8 @@ class ThreadsUseCase {
 
   async addThread(useCasePayload) {
     const addThread = new AddThread(useCasePayload);
-
-    return this._threadsRepository.addThread(addThread);
+    const addedThread = await this._threadsRepository.addThread(addThread);
+    return addedThread;
   }
 
   async getThreadDetailById(useCasePayload) {
@@ -19,23 +18,14 @@ class ThreadsUseCase {
     } = useCasePayload;
 
     const thread = await this._threadsRepository.getThreadDetailById(id);
-    const threadComments = await this._commentsRepository.getThreadDetailCommentsByThreadId(id);
+    const { comments } = await this._commentsRepository.getThreadDetailCommentsByThreadId(id);
 
-    const sortCommentsByDate = threadComments
-      .map(mapDBThreadDetailToModel)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const threadDetail = {
+      ...thread,
+      comments,
+    };
 
-    const checkDeletedComments = sortCommentsByDate.map((comment) => {
-      if (comment.isDeleted) {
-        comment.content = '**komentar telah dihapus**';
-        delete comment.isDeleted;
-        return comment;
-      }
-      delete comment.isDeleted;
-      return comment;
-    });
-
-    return { thread, comments: checkDeletedComments };
+    return threadDetail;
   }
 }
 

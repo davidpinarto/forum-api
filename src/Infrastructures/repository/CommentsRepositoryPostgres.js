@@ -1,6 +1,7 @@
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const CommentsRepository = require('../../Domains/comments/CommentsRepository');
 const AddedComments = require('../../Domains/comments/entities/AddedComments');
+const GetComments = require('../../Domains/comments/entities/GetComments');
 const InvariantError = require('../../Commons/exceptions/InvariantError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 
@@ -53,7 +54,7 @@ class CommentsRepositoryPostgres extends CommentsRepository {
 
     const result = await this._pool.query(query);
 
-    return result.rows;
+    return new GetComments(result.rows);
   }
 
   async validateCommentExist(id) {
@@ -106,8 +107,6 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     if (!result.rowCount) {
       throw new InvariantError('Gagal menghapus comment');
     }
-
-    return result.rows[0].id;
   }
 }
 
