@@ -8,8 +8,7 @@ class ThreadsUseCase {
 
   async addThread(useCasePayload) {
     const addThread = new AddThread(useCasePayload);
-    const addedThread = await this._threadsRepository.addThread(addThread);
-    return addedThread;
+    return this._threadsRepository.addThread(addThread);
   }
 
   async getThreadDetailById(useCasePayload) {
@@ -17,12 +16,9 @@ class ThreadsUseCase {
       id,
     } = useCasePayload;
 
-    const thread = await this._threadsRepository.getThreadDetailById(id);
-    const { comments } = await this._commentsRepository.getThreadDetailCommentsByThreadId(id);
-
     const threadDetail = {
-      ...thread,
-      comments,
+      ...(await this._threadsRepository.getThreadDetailById(id)),
+      ...(await this._commentsRepository.getThreadDetailCommentsByThreadId(id)),
     };
 
     return threadDetail;

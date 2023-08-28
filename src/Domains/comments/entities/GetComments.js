@@ -2,8 +2,7 @@ class GetComments {
   constructor(payload) {
     const mappedComment = this._mapDBThreadDetailToModel(payload);
     const sortedCommentsByDate = this._sortCommentsByDate(mappedComment);
-    const comments = this._checkDeletedComment(sortedCommentsByDate);
-    this.comments = comments;
+    this.comments = this._checkDeletedComment(sortedCommentsByDate);
   }
 
   _mapDBThreadDetailToModel(payload) {
