@@ -65,11 +65,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // create threads
       const threadsResponse = await server.inject({
@@ -207,11 +207,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // create threads
       const threadsResponse = await server.inject({
@@ -299,11 +299,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // create threads
       const threadsResponse = await server.inject({
@@ -412,11 +412,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson3 = JSON.parse(authenticationResponse3.payload);
@@ -551,11 +551,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson3 = JSON.parse(authenticationResponse3.payload);
@@ -670,11 +670,11 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
       // get access token 1
       const authenticationResponseJson1 = JSON.parse(authenticationResponse1.payload);
-      const { accessToken: accessToken1 } = authenticationResponseJson1.data;
+      const accessToken1 = authenticationResponseJson1.data.accessToken;
 
       // get access token 2
       const authenticationResponseJson2 = JSON.parse(authenticationResponse2.payload);
-      const { accessToken: accessToken2 } = authenticationResponseJson2.data;
+      const accessToken2 = authenticationResponseJson2.data.accessToken;
 
       // create threads
       const threadsResponse = await server.inject({
