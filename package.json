@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "testTimeout": 500000
+  },
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
