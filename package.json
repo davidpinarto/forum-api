@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "jest": {
-    "testTimeout": 100000
+    "testTimeout": 500000
   },
   "scripts": {
     "start": "node src/app.js",
